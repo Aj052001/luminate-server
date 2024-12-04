@@ -14,6 +14,7 @@ const { type } = require("os");
 
 
 const API_KEY = process.env.OPENAI_API_KEY;
+console.log(API_KEY)
 
 // Initialize conversation history
 let conversationHistory = [
