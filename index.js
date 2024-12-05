@@ -333,7 +333,7 @@ const Journal = mongoose.model("Journal", journalSchema);
 
 // Save Journal Entry// Save Journal Entry
 app.post("/api/journal", auth, async (req, res) => {
-  console.log(req.body.journalEntry)
+  
   try {
     const {
       medicine,
@@ -531,7 +531,7 @@ const Journey = mongoose.model("Journey", journeySchema);
 
 app.post("/api/story-answers", async (req, res) => {
   try {
-    console.log(req.body)
+    
     const { email,date, levels } = req.body;
 
     // Create a new journey with the provided email and levels
@@ -653,7 +653,7 @@ app.post("/api/saveAudio", auth, async (req, res) => {
 
 app.post("/api/profile", auth, async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email,selectedDate } = req.body;
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -683,7 +683,6 @@ app.post("/api/profile", auth, async (req, res) => {
     const postExperiencesAll = await PostExperience.find({ email });
     const audiosAll = await Audio.find({ email });
     const journalAllData = await Journal.find({ email });
-    console.log(journalAllData)
     const dates = journalAllData.map((journal) => journal.experienceDate);
     // Aggregate all data
     const profileData = {
