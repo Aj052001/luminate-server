@@ -317,11 +317,11 @@ const journalSchema = new mongoose.Schema({
   },
   currentState: {
     type: String,
-    required: true, // Current state of mind
+     // Current state of mind
   },
   postExperience: {
     type: String,
-    required: true, // Post-experience outlook
+    // Post-experience outlook
   },
   createdAt: {
     type: Date,
@@ -346,9 +346,7 @@ app.post("/api/journal", auth, async (req, res) => {
     if (
       !medicine ||
       !intention ||
-      !experienceDate ||
-      !currentState ||
-      !postExperience
+      !experienceDate
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -555,7 +553,6 @@ const expSchema = new mongoose.Schema({
   },
   postExperience: {
     type: String,
-    required: true, // Post-experience outlook
   },
   createdAt: {
     type: Date,
@@ -574,12 +571,7 @@ app.post("/api/savePostExperience", auth, async (req, res) => {
 
 
 
-    // Validate required fields
-    if (
-      !postExperience
-    ) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
+    
 
     const response = await chatWithGPT(postExperience);
     console.log("GPT:", response);
@@ -612,8 +604,7 @@ const audioSchema = new mongoose.Schema({
     required: true, // Email of the user
   },
   audio: {
-    type: String,
-    required: true, // Post-experience outlook
+    type: String, // Post-experience outlook
   },
   createdAt: {
     type: Date,
@@ -631,9 +622,9 @@ app.post("/api/saveAudio", auth, async (req, res) => {
     const response = await chatWithGPT(postExperience);
     console.log("GPT:", response);
     // Validate required fields
-    if (!postExperience) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
+    // if (!postExperience) {
+    //   return res.status(400).json({ message: "All fields are required." });
+    // }
 
     // Create a new Audio entry
     const newAudio = new Audio({
