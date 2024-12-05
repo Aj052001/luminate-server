@@ -573,14 +573,13 @@ app.post("/api/savePostExperience", auth, async (req, res) => {
 
     
 
-    const response = await chatWithGPT(postExperience);
-    console.log("GPT:", response);
+   
 
     
     // Create a new journal entry
     const newJournal = new PostExperience({
       email: req.user.email, // Extracted from authenticated user (via auth middleware)
-      postExperience:response,
+      postExperience:postExperience,
     });
 
     // Save the journal entry to the database
@@ -676,6 +675,7 @@ app.post("/api/profile", auth, async (req, res) => {
     const postExperiencesAll = await PostExperience.find({ email });
     const audiosAll = await Audio.find({ email });
     const journalAllData = await Journal.find({ email });
+    console.log(journalAllData)
     const dates = journalAllData.map((journal) => journal.experienceDate);
     // Aggregate all data
     const profileData = {
