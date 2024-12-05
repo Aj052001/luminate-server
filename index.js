@@ -333,6 +333,7 @@ const Journal = mongoose.model("Journal", journalSchema);
 
 // Save Journal Entry// Save Journal Entry
 app.post("/api/journal", auth, async (req, res) => {
+  console.log(req.body.journalEntry)
   try {
     const {
       medicine,
@@ -352,7 +353,9 @@ app.post("/api/journal", auth, async (req, res) => {
     }
 
     // Ensure experienceDate is a valid date
+    // console.log(experienceDate,"experiencdata")
     const date = new Date(experienceDate);
+   
     if (isNaN(date.getTime())) {
       return res.status(400).json({ message: "Invalid experience date." });
     }
@@ -387,6 +390,10 @@ const muscleSelectionSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true, // Email of the user
+  },
+  date:{
+    type:String,
+    required:true,
   },
   selectedMuscles: {
     type: [String], // Array of muscle names
@@ -461,21 +468,16 @@ app.post("/api/save-muscles", auth, async (req, res) => {
         .json({ message: "User not authenticated. Please log in." });
     }
 
-    // Check if the user already has saved muscles
-    let muscleSelection = await MuscleSelection.findOne({
-      email: req.user.email,
-    });
+    
 
-    if (muscleSelection) {
-      // Update existing muscle selection if found
-      muscleSelection.selectedMuscles = cleanedMuscles;
-    } else {
+    
       // Create a new muscle selection record if not found
       muscleSelection = new MuscleSelection({
         email: req.user.email,
+        date:req.body.date,
         selectedMuscles: cleanedMuscles,
       });
-    }
+ 
 
     // Save or update the muscle selection record
     await muscleSelection.save();
@@ -494,6 +496,11 @@ const journeySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  date:{
+    type:String,
+    required:true
+  },
+  
   levels: [
     {
       title: {
@@ -524,11 +531,13 @@ const Journey = mongoose.model("Journey", journeySchema);
 
 app.post("/api/story-answers", async (req, res) => {
   try {
-    const { email, levels } = req.body;
+    console.log(req.body)
+    const { email,date, levels } = req.body;
 
     // Create a new journey with the provided email and levels
     const newJourney = new Journey({
       email,
+      date,
       levels,
     });
 
@@ -551,6 +560,10 @@ const expSchema = new mongoose.Schema({
     type: String,
     required: true, // Email of the user
   },
+  date:{
+    type:String,
+    required:true,
+  },
   postExperience: {
     type: String,
   },
@@ -566,19 +579,12 @@ const PostExperience = mongoose.model("PostExperience", expSchema);
 app.post("/api/savePostExperience", auth, async (req, res) => {
   try {
     const {
-      postExperience,
-    } = req.body.journalEntry;
-
-
-
-    
-
-   
-
-    
+      postExperience
+    } = req.body.journalEntry;    
     // Create a new journal entry
     const newJournal = new PostExperience({
-      email: req.user.email, // Extracted from authenticated user (via auth middleware)
+      email: req.user.email,
+      date:req.body.date,
       postExperience:postExperience,
     });
 
@@ -593,14 +599,15 @@ app.post("/api/savePostExperience", auth, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
-
 //audio record
 const audioSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true, // Email of the user
+  },
+  date:{
+    type:String,
+    required:true,
   },
   audio: {
     type: String, // Post-experience outlook
@@ -628,6 +635,7 @@ app.post("/api/saveAudio", auth, async (req, res) => {
     // Create a new Audio entry
     const newAudio = new Audio({
       email: req.user.email,  // Extracted from the authenticated user (via auth middleware)
+      date:req.body.date,
       audio: response,  // Save the postExperience as 'audio'
     });
 
@@ -705,27 +713,7 @@ app.post("/api/profile", auth, async (req, res) => {
 });
 
 
-// ....................deployment..................
 
-// const __dirname1 = path.resolve();
-
-
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname1, "/luminate-app/build")));
-//   app.get("*", (req, res) =>
-    
-//     res.sendFile(path.resolve(__dirname1, "luminate-app", "build", "index.html"))
-
-//   );
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is running..");
-//   });
-// }
-
-
-
-// ....................deployment..................
 
 
 app.get("/",(req,res)=>{
